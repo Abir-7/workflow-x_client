@@ -18,6 +18,7 @@ const Login = () => {
   const router = useRouter();
   const [loginUser] = useLoginMutation();
   const onSubmit = async (data: { email: string; password: string }) => {
+    setIsSubmitting(true);
     const res = await loginUser(data);
     console.log(res);
     if (res?.error) {
@@ -34,7 +35,7 @@ const Login = () => {
   };
   useEffect(() => {
     if (token) {
-      router.push(`/${user?.userRole.toLowerCase()}`);
+      router.push(`/`);
     }
   }, [token, user]);
 

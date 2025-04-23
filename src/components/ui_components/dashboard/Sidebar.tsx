@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -8,20 +9,29 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useAppSelector } from "@/Redux/hooks";
+import { logoutUserData } from "@/Redux/feature/authSlice/authSlice";
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
+import { logout } from "@/Redux/services/auth.service";
 import { Home, User } from "lucide-react";
 import Link from "next/link";
 
 export function AppSidebar() {
-  const { token, user } = useAppSelector((state) => state.auth);
-  const routes = [
+  const dispatch = useAppDispatch();
+  const logoutUser = async () => {
+    await logout();
+    dispatch(logoutUserData());
+  };
+  const { user } = useAppSelector((state) => state.auth);
+
+  const allRoutes = [
     {
       name: "Dashboard",
+
       child: [
         {
           name: "Dashboard Data",
           path: "/",
-          role: ["ADMIN"],
+          role: ["ADMIN", "LEADER", "USER"],
           icon: User,
         },
       ],
@@ -32,8 +42,8 @@ export function AppSidebar() {
         {
           name: "All User",
           path: "/admin/manage_users",
-          role: ["ADMIN"],
           icon: User,
+          role: ["ADMIN"],
         },
       ],
     },
@@ -43,8 +53,20 @@ export function AppSidebar() {
         {
           name: "Add Project",
           path: "/admin/add_project",
-          role: ["ADMIN", "LEADER"],
           icon: Home,
+          role: ["ADMIN", "LEADER"],
+        },
+        {
+          name: "Running Projects",
+          path: "/user/add_project",
+          icon: Home,
+          role: ["USER"],
+        },
+        {
+          name: "Completed Project",
+          path: "/user/add_project",
+          icon: Home,
+          role: ["USER"],
         },
       ],
     },
@@ -54,28 +76,47 @@ export function AppSidebar() {
         {
           name: "Add Team",
           path: "/admin/add_project",
-          role: ["ADMIN", "LEADER"],
           icon: Home,
+          role: ["ADMIN", "LEADER"],
+        },
+        {
+          name: "My Team",
+          path: `/${user?.userRole.toLowerCase()}/my_team`,
+          icon: Home,
+          role: ["USER", "LEADER"],
         },
       ],
     },
   ];
+  console.log(user);
+  const routes = allRoutes
+    .map((route) => {
+      const allowedChildren = route.child.filter((child) =>
+        child.role.includes(user?.userRole as string)
+      );
+      if (allowedChildren.length > 0) {
+        return { ...route, child: allowedChildren };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
   return (
     <Sidebar className="absolute ">
       <SidebarContent className="bg-blue-950 text-white">
-        <SidebarGroup>
-          {routes.map((route, i) => (
+        <SidebarGroup className="h-full">
+          {routes?.map((route, i) => (
             <div key={i} className="mb-2">
-              <SidebarGroupLabel className="text-xl text-white ">
-                {route.name}
+              <SidebarGroupLabel className="text-xl text-white mb-1 ">
+                {route?.name}
               </SidebarGroupLabel>
-              <hr />
+              <hr className="mb-1" />
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {route.child.map((item, i) => (
+                  {route?.child?.map((item, i) => (
                     <SidebarMenuItem key={i}>
                       <SidebarMenuButton asChild>
-                        <Link href={item.path} className="mt-2">
+                        <Link href={item.path} className="">
                           <item.icon />
                           <span className="text-base font-semibold">
                             {item.name}
@@ -89,6 +130,11 @@ export function AppSidebar() {
             </div>
           ))}
         </SidebarGroup>
+        <div className="p-2 ">
+          <Button className="w-full" onClick={logoutUser}>
+            logut
+          </Button>
+        </div>
       </SidebarContent>
     </Sidebar>
   );
