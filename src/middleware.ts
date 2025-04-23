@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getCurrentUser } from "./Redux/services/auth.service";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get("authToken")?.value;
-
+  const token = await getCurrentUser();
+  console.log(token, "gg");
   const publicPaths = ["/login", "/signup", "/verify"];
-
-  if (publicPaths.includes(pathname) && token) {
-    return NextResponse.redirect(new URL("/home", request.url));
-  }
 
   if (!publicPaths.includes(pathname) && !token) {
     return NextResponse.redirect(new URL("/login", request.url));

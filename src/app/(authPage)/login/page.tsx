@@ -2,13 +2,42 @@
 import CButton from "@/components/ui_components/form/CButton";
 import CForm from "@/components/ui_components/form/CForm";
 import CInput from "@/components/ui_components/form/CInput";
+import { useLoginMutation } from "@/Redux/api/authApi/authApi";
+import { login } from "@/Redux/feature/authSlice/authSlice";
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
+import { getCurrentUser, saveAccessToken } from "@/Redux/services/auth.service";
 import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const Login = () => {
+  const dispatch = useAppDispatch();
+  const { token, user } = useAppSelector((state) => state.auth);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const [loginUser] = useLoginMutation();
   const onSubmit = async (data: { email: string; password: string }) => {
-    console.log(data);
+    const res = await loginUser(data);
+    console.log(res);
+    if (res?.error) {
+      toast.error("Failed to login. Check email or password.");
+      setIsSubmitting(false);
+    }
+    if (res?.data?.success) {
+      await saveAccessToken(res.data.data.accessToken);
+      const user = await getCurrentUser();
+      dispatch(login({ token: res.data.data.accessToken, user: user }));
+      toast.success("Login Success");
+      setIsSubmitting(false);
+    }
   };
+  useEffect(() => {
+    if (token) {
+      router.push(`/${user?.userRole.toLowerCase()}`);
+    }
+  }, [token, user]);
+
   return (
     <div className="  bg-stone-100  overflow-y-auto   h-screen grid  lg:grid-cols-2 items-center">
       <div className="bg-blue-950 h-full grid items-center">
@@ -44,6 +73,7 @@ const Login = () => {
             ></CInput>
 
             <CButton
+              isSubmitting={isSubmitting}
               label="Login"
               className="font-semibold w-full bg-blue-950 px-10 py-2 text-white rounded-2xl"
             ></CButton>

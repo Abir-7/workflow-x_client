@@ -37,7 +37,7 @@ const Singup = () => {
     finalFormData.append("data", JSON.stringify(dataObj));
     const res = (await createUser(finalFormData)) as any;
     console.log(res);
-    if (res?.error?.data?.success === false) {
+    if (res?.error) {
       toast.error("Failed to create user.");
       setIsSubmitting(false);
     }
