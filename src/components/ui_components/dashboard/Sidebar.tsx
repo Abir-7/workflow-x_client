@@ -16,6 +16,17 @@ export function AppSidebar() {
   const { token, user } = useAppSelector((state) => state.auth);
   const routes = [
     {
+      name: "Dashboard",
+      child: [
+        {
+          name: "Dashboard Data",
+          path: "/",
+          role: ["ADMIN"],
+          icon: User,
+        },
+      ],
+    },
+    {
       name: "Manage User",
       child: [
         {
