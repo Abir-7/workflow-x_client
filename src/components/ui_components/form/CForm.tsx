@@ -19,6 +19,8 @@ const CForm = <T extends FieldValues>({
   onSubmit,
   defaultValues = {},
 }: CFormProps<T>) => {
+  console.log(defaultValues.defaultValues);
+
   const methods = useForm<T>({
     defaultValues: defaultValues as DefaultValues<T>,
   });
@@ -31,7 +33,7 @@ const CForm = <T extends FieldValues>({
   return (
     <FormProvider {...methods}>
       <form
-        className="grid gap-4"
+        className="grid gap-1"
         onSubmit={methods.handleSubmit(handleFormSubmit)}
       >
         {children}

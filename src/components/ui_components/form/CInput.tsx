@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -26,15 +27,15 @@ const CInput: React.FC<InputFieldProps> = ({
 
   return (
     <div className="mb-4">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+      <Label className="mb-1" htmlFor={name}>
         {label}
-      </label>
+      </Label>
       <Input
         id={name}
         type={type}
         placeholder={placeholder}
         {...register(name, validation)}
-        className={`input input-bordered w-full mt-1 ${className}`}
+        className={` border border-gray-300 w-full mt-1 ${className}`}
       />
       {errors[name] && (
         <p className="mt-1 text-sm text-red-600">

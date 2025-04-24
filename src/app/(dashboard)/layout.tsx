@@ -21,13 +21,13 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   }, [token, user]);
 
   return (
-    <div className="relative  overflow-hidden">
-      <SidebarProvider className="">
+    <div className="relative h-screen  overflow-hidden">
+      <SidebarProvider className="h-full">
         <AppSidebar />
-        <main className="w-full">
+        <div className="w-full overflow-y-auto">
           <SidebarTrigger />
           {children}
-        </main>
+        </div>
       </SidebarProvider>
     </div>
   );

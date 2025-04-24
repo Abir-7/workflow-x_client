@@ -6,7 +6,6 @@ interface SelectFieldProps {
   label: string; // Label for the select
   options: { value: string | number; label: string }[]; // Options for the select
   placeholder?: string; // Placeholder text
-  className?: string; // Optional styling class
   validation?: object; // Validation rules for react-hook-form
 }
 
@@ -15,7 +14,6 @@ const CSelect: React.FC<SelectFieldProps> = ({
   label,
   options,
   placeholder = "Select an option",
-  className = "",
   validation = {},
 }) => {
   const {
@@ -24,24 +22,46 @@ const CSelect: React.FC<SelectFieldProps> = ({
   } = useFormContext();
 
   return (
-    <div className="mb-4">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+    <div className="mb-6 max-w-full w-full">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-900">
         {label}
       </label>
-      <select
-        id={name}
-        {...register(name, validation)}
-        className={`select select-bordered w-full mt-1 ${className}`}
-      >
-        <option value="" disabled>
-          {placeholder}
-        </option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
+      <div className="relative mt-2">
+        <select
+          id={name}
+          className={`block w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-md shadow-xs focus:outline-none focus:ring-3 focus:ring-gray-300 focus:border-gray-400 ${
+            errors[name] ? "border-red-500" : "border-gray-300"
+          } appearance-none transition duration-300 ease-in-out`}
+          {...register(name, validation)}
+          defaultValue="" // This makes sure placeholder is visible first
+        >
+          {/* Disabled option for placeholder with custom color */}
+          <option value="" disabled className="text-gray-200">
+            {placeholder}
           </option>
-        ))}
-      </select>
+          {options.map((option) => (
+            <option key={option.value} value={String(option.value)}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </span>
+      </div>{" "}
       {errors[name] && (
         <p className="mt-1 text-sm text-red-600">
           {errors[name]?.message as string}

@@ -33,7 +33,7 @@ const CInputOTP: React.FC<InputOTPFieldProps> = ({
         maxLength={maxLength}
         pattern={REGEXP_ONLY_DIGITS}
         onChange={(value) => setValue(name, value)}
-        className={`mt-1  ${className}`}
+        className={`mt-1  border border-accent shadow-xs ${className}`}
       >
         <InputOTPGroup className="">
           {Array.from({ length: maxLength }).map((_, index) => (
