@@ -38,6 +38,14 @@ const AddProject = () => {
                 deadline: new Date(),
                 status: "Not Started",
               },
+              {
+                // Default phase
+                name: "Planning",
+                budget: 10000,
+                members: [{ id: 1, name: "Audi" }],
+                deadline: new Date(),
+                status: "Not Started",
+              },
             ],
           }}
           onSubmit={onSubmit}
