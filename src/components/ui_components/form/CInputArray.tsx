@@ -14,10 +14,40 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import CMultiSelect from "./CMultiSelect";
 
-type TPhase = "Planning" | "Development" | "Testing" | "Deployment"; // Add your phase types
-type IPhaseStatus = "Not Started" | "In Progress" | "Completed" | "Delayed"; // Add your status types
+type TPhase =
+  | "UI/UX"
+  | "R&D"
+  | "API_DEVELOPMENT"
+  | "API_INTIGRATION"
+  | "DASHBOARD_DESIGN"
+  | "DASHBOARD_INTIGRATION"
+  | "WEBSITE_DESIGN"
+  | "WEBSITE_DEPLOYMENT"
+  | "APP_DEPLOYMENT"
+  | "APP_DESIGN";
 
-export function CInputArray() {
+type IPhaseStatus = "ACTIVE" | "INACTIVE";
+
+const phases: TPhase[] = [
+  "UI/UX",
+  "R&D",
+  "API_DEVELOPMENT",
+  "API_INTIGRATION",
+  "DASHBOARD_DESIGN",
+  "DASHBOARD_INTIGRATION",
+  "WEBSITE_DESIGN",
+  "WEBSITE_DEPLOYMENT",
+  "APP_DEPLOYMENT",
+  "APP_DESIGN",
+];
+
+interface CInputArrayProps {
+  requiredMessage?: string | false;
+}
+
+export function CInputArray({
+  requiredMessage = "This field is required",
+}: CInputArrayProps) {
   const { control } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
@@ -25,14 +55,13 @@ export function CInputArray() {
     name: "phases",
   });
 
-  // Add a default phase if none exists
   if (fields.length === 0) {
     append({
       name: "" as TPhase,
       budget: 0,
-      members: [], // Initialize members as an empty array
-      deadline: new Date(),
-      status: "Not Started" as IPhaseStatus,
+      members: [],
+      deadline: "",
+      status: "INACTIVE" as IPhaseStatus,
     });
   }
 
@@ -43,7 +72,7 @@ export function CInputArray() {
       {fields.map((field, index) => (
         <div key={field.id} className="border p-4 rounded-lg space-y-4">
           <div className="flex justify-between items-center">
-            <Label>Phase {index + 1}</Label>
+            <Label>Phase {index + 1} </Label>
             {index > 0 && (
               <Button
                 type="button"
@@ -58,49 +87,79 @@ export function CInputArray() {
             )}
           </div>
 
-          {/* Phase Name */}
+          {/* Phase Name and Budget */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label className="mb-1" htmlFor={`phases.${index}.name`}>
-                Phase Name
+                Phase Name{" "}
+                {requiredMessage !== false && <p className="text-red-500">*</p>}
               </Label>
               <Controller
-                control={control}
                 name={`phases.${index}.name`}
-                render={({ field }) => (
-                  <select
-                    {...field}
-                    id={`phases.${index}.name`}
-                    className={`block w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-md shadow-xs focus:outline-none focus:ring-3 focus:ring-gray-300 focus:border-gray-400  appearance-none transition duration-300 ease-in-out`}
-                    value={field.value || ""}
-                  >
-                    <option value="" disabled className="text-gray-200">
-                      Select Phase Name
-                    </option>
-                    <option value="Planning">Planning</option>
-                    <option value="Development">Development</option>
-                    <option value="Testing">Testing</option>
-                    <option value="Deployment">Deployment</option>
-                  </select>
+                control={control}
+                rules={{ required: requiredMessage }}
+                render={({ field, fieldState }) => (
+                  <div>
+                    <select
+                      {...field}
+                      id={`phases.${index}.name`}
+                      className={`block w-full px-4 py-2 pr-10 text-sm border ${
+                        fieldState.error ? "border-red-500" : "border-gray-300"
+                      } rounded-md shadow-xs focus:outline-none focus:ring-3 ${
+                        fieldState.error
+                          ? "focus:ring-red-500"
+                          : "focus:ring-gray-300"
+                      } appearance-none transition duration-300 ease-in-out`}
+                    >
+                      <option value="" disabled>
+                        Select Phase Name
+                      </option>
+                      {phases.map((phase) => (
+                        <option key={phase} value={phase}>
+                          {phase.replace(/_/g, " ")}
+                        </option>
+                      ))}
+                    </select>
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
                 )}
               />
             </div>
 
-            {/* Budget */}
             <div>
               <Label className="mb-1" htmlFor={`phases.${index}.budget`}>
-                Budget ($)
+                Budget ($){" "}
+                {requiredMessage !== false && <p className="text-red-500">*</p>}
               </Label>
               <Controller
                 control={control}
                 name={`phases.${index}.budget`}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="number"
-                    min="0"
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                  />
+                rules={{
+                  required: requiredMessage,
+                  min: {
+                    value: requiredMessage == false ? 0 : 10,
+                    message: "Budget cannot be Zero",
+                  },
+                }}
+                render={({ field, fieldState }) => (
+                  <div>
+                    <Input
+                      {...field}
+                      type="number"
+                      min="0"
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      className={`${fieldState.error ? "border-red-500" : ""}`}
+                    />
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
                 )}
               />
             </div>
@@ -110,35 +169,44 @@ export function CInputArray() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label className="mb-1" htmlFor={`phases.${index}.deadline`}>
-                Deadline
+                Deadline{" "}
+                {requiredMessage !== false && <p className="text-red-500">*</p>}
               </Label>
               <Controller
                 control={control}
                 name={`phases.${index}.deadline`}
-                render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className="w-full justify-start text-left font-normal"
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
+                rules={{ required: requiredMessage }}
+                render={({ field, fieldState }) => (
+                  <div>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={`w-full justify-start text-left font-normal ${
+                            fieldState.error ? "border-red-500" : ""
+                          }`}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value
+                            ? format(field.value, "PPP")
+                            : "Pick a date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
                 )}
               />
             </div>
@@ -154,26 +222,22 @@ export function CInputArray() {
                   <select
                     {...field}
                     id={`phases.${index}.status`}
-                    className={`block w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-md shadow-xs focus:outline-none focus:ring-3 focus:ring-gray-300 focus:border-gray-400  appearance-none transition duration-300 ease-in-out`}
+                    className="block w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-md shadow-xs focus:outline-none focus:ring-3 focus:ring-gray-300 focus:border-gray-400 appearance-none transition duration-300 ease-in-out"
                     value={field.value}
                   >
-                    <option value="Not Started">Not Started</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Delayed">Delayed</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="INACTIVE">INACTIVE</option>
                   </select>
                 )}
               />
             </div>
           </div>
 
-          {/* Members (Multi-Select with display of number of selected members) */}
-          <div>
-            <CMultiSelect
-              name={`phases.${index}.members`}
-              options={[{ id: 131231, name: "2131" }]}
-            />
-          </div>
+          {/* Members Multi-Select */}
+          <CMultiSelect
+            name={`phases.${index}.members`}
+            options={[{ id: 131231, name: "2131" }]}
+          />
         </div>
       ))}
 
@@ -182,11 +246,11 @@ export function CInputArray() {
         variant="outline"
         onClick={() =>
           append({
-            name: "Development" as TPhase,
+            name: "" as TPhase,
             budget: 0,
-            members: [], // Initial members as an empty array
-            deadline: new Date(),
-            status: "Not Started" as IPhaseStatus,
+            members: [],
+            deadline: "",
+            status: "INACTIVE" as IPhaseStatus,
           })
         }
         className="mb-4"

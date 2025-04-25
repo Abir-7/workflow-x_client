@@ -1,24 +1,24 @@
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
-interface InputFieldProps {
-  name: string; // Field name
-  label: string; // Label for the field
-  type?: "text" | "email" | "number" | "password" | "date" | "file"; // Input types
-  placeholder?: string; // Placeholder text
-  className?: string; // Optional styling class
-  validation?: object; // Validation rules for react-hook-form
+interface TextAreaFieldProps {
+  name: string;
+  label: string;
+  placeholder?: string;
+  className?: string;
+  validation?: object;
+  rows?: number;
 }
 
-const CInput: React.FC<InputFieldProps> = ({
+const CTextArea: React.FC<TextAreaFieldProps> = ({
   name,
   label,
-  type = "text",
   placeholder = "",
   className = "",
   validation = {},
+  rows = 4,
 }) => {
   const {
     register,
@@ -30,15 +30,15 @@ const CInput: React.FC<InputFieldProps> = ({
       <Label className="mb-1" htmlFor={name}>
         {label}{" "}
         {Object.keys(validation).length > 0 && (
-          <p className="text-red-500">*</p>
+          <span className="text-red-500">*</span>
         )}
       </Label>
-      <Input
+      <Textarea
         id={name}
-        type={type}
+        rows={rows}
         placeholder={placeholder}
         {...register(name, validation)}
-        className={` border border-gray-300 w-full mt-1 ${className}`}
+        className={`border border-gray-300 w-full mt-1 ${className}`}
       />
       {errors[name] && (
         <p className="mt-1 text-sm text-red-600">
@@ -49,4 +49,4 @@ const CInput: React.FC<InputFieldProps> = ({
   );
 };
 
-export default CInput;
+export default CTextArea;

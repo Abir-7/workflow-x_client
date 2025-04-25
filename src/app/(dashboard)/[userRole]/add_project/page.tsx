@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 import CButton from "@/components/ui_components/form/CButton";
 import CForm from "@/components/ui_components/form/CForm";
@@ -5,51 +8,23 @@ import CInput from "@/components/ui_components/form/CInput";
 import { CInputArray } from "@/components/ui_components/form/CInputArray";
 import CMultiSelect from "@/components/ui_components/form/CMultiSelect";
 import CSelect from "@/components/ui_components/form/CSelect";
+import CTextArea from "@/components/ui_components/form/CTextArea";
+import { useAddProjectMutation } from "@/Redux/api/projectApi/projectApi";
 import React from "react";
 
 const AddProject = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [addProject] = useAddProjectMutation();
   const onSubmit = async (data: any) => {
-    console.log(data, "dd");
+    console.log(data);
+    //await addProject()
   };
+
   return (
     <div className="px-2  ">
       <h1 className="my-2 text-xl font-bold text-center">Add New Project</h1>
 
       <div className="mb-3">
-        <CForm
-          defaultValues={{
-            name: "Project X", // Default project name
-            clientName: "Client Y", // Default client name
-            projectGroup: "https://example.com", // Default project group link
-            teamId: "2131223", // Default team selection (Team 1)
-            mebmers: [{ id: 1, name: "Audi" }], // Default members
-            totalBudget: 100000, // Default budget
-            duration: 12, // Default duration in months
-            description: "This is a sample project description", // Default description
-            salesName: "John Doe", // Default sales name
-            status: "2131223", // Default status (Team 1)
-            phases: [
-              {
-                // Default phase
-                name: "Planning",
-                budget: 10000,
-                members: [{ id: 1, name: "Audi" }],
-                deadline: new Date(),
-                status: "Not Started",
-              },
-              {
-                // Default phase
-                name: "Planning",
-                budget: 10000,
-                members: [{ id: 1, name: "Audi" }],
-                deadline: new Date(),
-                status: "Not Started",
-              },
-            ],
-          }}
-          onSubmit={onSubmit}
-        >
+        <CForm onSubmit={onSubmit}>
           <CInput
             validation={{ required: "This field is required" }}
             label="Project Name"
@@ -67,9 +42,13 @@ const AddProject = () => {
             name="projectGroup"
             placeholder="Project Group Link"
           ></CInput>
+          <CInput
+            label="Google Sheet"
+            name="googleSheetLink"
+            placeholder="Google Sheet Link"
+          ></CInput>
           <div className=" flex ">
             <CSelect
-              validation={{ required: "This field is required" }}
               options={[
                 { label: "Team 1", value: "2131223" },
                 { label: "Team 2", value: "213123" },
@@ -102,11 +81,12 @@ const AddProject = () => {
             name="duration"
             placeholder="In month"
           ></CInput>
-          <CInput
+          <CTextArea
+            validation={{ required: "This field is required" }}
             label="Description"
             name="description"
             placeholder="Project description"
-          ></CInput>
+          ></CTextArea>
 
           <CInput
             validation={{ required: "This field is required" }}
@@ -116,8 +96,9 @@ const AddProject = () => {
           ></CInput>
           <CSelect
             options={[
-              { label: "Team 1", value: "2131223" },
-              { label: "Team 2", value: "213123" },
+              { label: "COMPLETED", value: "COMPLETED" },
+              { label: "ONGOING", value: "ONGOING" },
+              { label: "CENCELED", value: "CENCELED" },
             ]}
             name="status"
             label="Status"

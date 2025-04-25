@@ -52,7 +52,7 @@ export function AppSidebar() {
       child: [
         {
           name: "Add Project",
-          path: "/admin/add_project",
+          path: `/${user?.userRole.toLowerCase()}/add_project`,
           icon: Home,
           role: ["ADMIN", "LEADER"],
         },
@@ -75,7 +75,7 @@ export function AppSidebar() {
       child: [
         {
           name: "Add Team",
-          path: "/admin/add_project",
+          path: `/${user?.userRole.toLowerCase()}/add_team`,
           icon: Home,
           role: ["ADMIN", "LEADER"],
         },
@@ -84,6 +84,23 @@ export function AppSidebar() {
           path: `/${user?.userRole.toLowerCase()}/my_team`,
           icon: Home,
           role: ["USER", "LEADER"],
+        },
+      ],
+    },
+    {
+      name: "Manage Project Groups",
+      child: [
+        {
+          name: "Add Group",
+          path: `/${user?.userRole.toLowerCase()}/add_project_group`,
+          icon: Home,
+          role: ["ADMIN", "LEADER"],
+        },
+        {
+          name: "All Groups",
+          path: `/${user?.userRole.toLowerCase()}/my_team`,
+          icon: Home,
+          role: ["ADMIN"],
         },
       ],
     },

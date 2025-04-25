@@ -19,7 +19,7 @@ const CForm = <T extends FieldValues>({
   onSubmit,
   defaultValues = {},
 }: CFormProps<T>) => {
-  console.log(defaultValues.defaultValues);
+
 
   const methods = useForm<T>({
     defaultValues: defaultValues as DefaultValues<T>,

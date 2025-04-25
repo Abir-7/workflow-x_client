@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -13,7 +14,7 @@ const CSelect: React.FC<SelectFieldProps> = ({
   name,
   label,
   options,
-  placeholder = "Select an option",
+  placeholder,
   validation = {},
 }) => {
   const {
@@ -23,22 +24,28 @@ const CSelect: React.FC<SelectFieldProps> = ({
 
   return (
     <div className="mb-6 max-w-full w-full">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-900">
+      <label
+        htmlFor={name}
+        className="flex gap-2 text-sm font-medium text-gray-900"
+      >
         {label}
+        {Object.keys(validation).length > 0 && (
+          <p className="text-red-500">*</p>
+        )}
       </label>
-      <div className="relative mt-2">
+      <div className="relative ">
         <select
           id={name}
           className={`block w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-md shadow-xs focus:outline-none focus:ring-3 focus:ring-gray-300 focus:border-gray-400 ${
             errors[name] ? "border-red-500" : "border-gray-300"
           } appearance-none transition duration-300 ease-in-out`}
           {...register(name, validation)}
-          defaultValue="" // This makes sure placeholder is visible first
+          defaultValue="ONGOING" // This makes sure placeholder is visible first
         >
           {/* Disabled option for placeholder with custom color */}
-          <option value="" disabled className="text-gray-200">
+          {/* <option value="" disabled className="text-gray-200">
             {placeholder}
-          </option>
+          </option> */}
           {options.map((option) => (
             <option key={option.value} value={String(option.value)}>
               {option.label}
