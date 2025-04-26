@@ -8,6 +8,7 @@ interface SelectFieldProps {
   options: { value: string | number; label: string }[]; // Options for the select
   placeholder?: string; // Placeholder text
   validation?: object; // Validation rules for react-hook-form
+  defaultValue?: string;
 }
 
 const CSelect: React.FC<SelectFieldProps> = ({
@@ -15,6 +16,7 @@ const CSelect: React.FC<SelectFieldProps> = ({
   label,
   options,
   placeholder,
+  defaultValue = "",
   validation = {},
 }) => {
   const {
@@ -35,17 +37,20 @@ const CSelect: React.FC<SelectFieldProps> = ({
       </label>
       <div className="relative ">
         <select
+          disabled={options.length <= 0}
           id={name}
           className={`block w-full px-4 py-2 pr-10 text-sm border border-gray-300 rounded-md shadow-xs focus:outline-none focus:ring-3 focus:ring-gray-300 focus:border-gray-400 ${
             errors[name] ? "border-red-500" : "border-gray-300"
           } appearance-none transition duration-300 ease-in-out`}
           {...register(name, validation)}
-          defaultValue="ONGOING" // This makes sure placeholder is visible first
+          defaultValue={defaultValue}
         >
           {/* Disabled option for placeholder with custom color */}
-          {/* <option value="" disabled className="text-gray-200">
-            {placeholder}
-          </option> */}
+          {placeholder && (
+            <option value="" disabled className="text-gray-200">
+              {placeholder}
+            </option>
+          )}
           {options.map((option) => (
             <option key={option.value} value={String(option.value)}>
               {option.label}

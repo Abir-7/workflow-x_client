@@ -102,7 +102,7 @@ const AddProject = () => {
             ]}
             name="status"
             label="Status"
-            placeholder={"Set-Status"}
+            defaultValue="ONGOING"
           ></CSelect>
           <CButton
             className="bg-blue-950 text-white font-semibold  w-full py-2 rounded-lg"

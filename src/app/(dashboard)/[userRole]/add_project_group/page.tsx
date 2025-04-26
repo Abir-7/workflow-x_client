@@ -16,9 +16,21 @@ const ProjectGroup = () => {
       </h1>
       <div>
         <CForm onSubmit={onSubmit}>
-          <CInput label="Group Name" name="name"></CInput>
-          <CInput label="Project Id" name="projectId"></CInput>
-          <CInput label="Group Link" name="link"></CInput>
+          <CInput
+            validation={{ required: "This field is required" }}
+            label="Group Name"
+            name="name"
+          ></CInput>
+          <CInput
+            validation={{ required: "This field is required" }}
+            label="Project Id"
+            name="projectId"
+          ></CInput>
+          <CInput
+            validation={{ required: "This field is required" }}
+            label="Group Link"
+            name="link"
+          ></CInput>
 
           <CButton
             className="bg-blue-950 text-white font-semibold  w-full py-2 rounded-lg"

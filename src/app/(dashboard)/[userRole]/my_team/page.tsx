@@ -1,9 +1,12 @@
 "use client";
 
+import { useAppSelector } from "@/Redux/hooks";
 import { useParams } from "next/navigation";
 import React from "react";
 
 const MyTeam = () => {
+  const { token, user } = useAppSelector((state) => state.auth);
+
   const params = useParams();
   const userRole = params.userRole;
 
