@@ -27,6 +27,7 @@ const AddTeam = () => {
       value: user?._id,
     };
   });
+
   const onSubmit = async (formData: any) => {
     setIsSubmitting(true);
     const formDataObj = new FormData();

@@ -85,7 +85,7 @@ const CMultiSelect = ({
                     }`}
                     fill="none"
                     stroke="currentColor"
-                    viewBox="0 0 24 24"
+                    viewBox="0 0 28 28"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
@@ -100,6 +100,11 @@ const CMultiSelect = ({
                 {isOpen && (
                   <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
                     <ul className="py-1">
+                      {options.length <= 0 && (
+                        <li className="px-3 py-1 hover:bg-gray-100 cursor-pointer flex items-center">
+                          No Member Available
+                        </li>
+                      )}
                       {options.map((member) => (
                         <li
                           key={member.id}
